@@ -34,6 +34,8 @@ private:
 	void loadCities();
 	void loadConnections();
 	void loadPlanes();
+
+	void destroyMap();
 public:
 	InputManager(const int w, const int h);
 	~InputManager();

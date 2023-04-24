@@ -149,9 +149,17 @@ ostream& operator<<(ostream& os, const myString& s)
 istream& operator>>(istream& is, myString& s)
 {
 	const int BUFFER_SIZE = 2048;
-	char buffer[BUFFER_SIZE];
+	char* buffer = new char[BUFFER_SIZE];
 	is >> buffer;
-	s.data = buffer;
+	
+	if (s.data != nullptr)
+		delete[] s.data;
+	s.size = strlen(buffer) + 1;
+	s.data = new char[s.size];
+	for (int i = 0; i < s.size; i++)
+		s.data[i] = buffer[i];
+
+	delete[] buffer;
 	return is;
 }
 

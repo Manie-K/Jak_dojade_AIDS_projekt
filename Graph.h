@@ -28,7 +28,6 @@ public:
 
 	int getSize() const { return vertexCount; }
 
-
 	T*& operator[](int index)
 	{
 		return getAtIndex(index);

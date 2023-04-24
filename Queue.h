@@ -8,10 +8,7 @@ private:
 	List<T> list;
 	size_t size;
 public:
-	Queue()
-	{
-		size = 0;
-	}
+	Queue():size(0){}
 	~Queue(){}
 
 	size_t getSize() const { return size; }

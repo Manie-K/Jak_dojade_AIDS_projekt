@@ -11,15 +11,7 @@ InputManager::InputManager(const int w, const int h) : w(w), h(h), starCounter(0
 InputManager::~InputManager()
 {
 	delete graph;
-	for (int y = 0; y < h; y++)
-	{
-		for (int x = 0; x < w; x++)
-		{
-			delete map[y];
-			map[y] = nullptr;
-		}
-	}
-	delete map;
+	delete []map;
 	map = nullptr;
 }
 
@@ -30,6 +22,23 @@ bool InputManager::isValidCityName(const char c)
 bool InputManager::isEdgeOfCity(const Coords_T pos)
 {
 	return !(isValidCityName(map[pos.y][pos.x - 1]) && isValidCityName(map[pos.y][pos.x + 1]));
+}
+
+Vertex*& InputManager::getVertexByName(const myString& str)
+{
+	for (int i = 0; i < graph->getSize(); i++)
+	{
+		if ((*graph)[i]->getName() == str)
+			return (*graph)[i];
+	}
+}
+Vertex*& InputManager::getVertexByPosition(const Coords_T& position)
+{
+	for (int i = 0; i < graph->getSize(); i++)
+	{
+		if ((*graph)[i]->getPos() == position)
+			return (*graph)[i];
+	}
 }
 
 myString InputManager::getCityName(const Coords_T pos)
@@ -96,23 +105,6 @@ myString InputManager::getCity(const Coords_T pos)
 	if (x > 0 && y < h - 1 && isValidCityName(map[y + 1][x - 1]) && isEdgeOfCity({ x - 1,y + 1 }))
 	{
 		return getCityName({ x - 1,y + 1 });
-	}
-}
-
-Vertex*& InputManager::getVertexByName(const myString& str)
-{
-	for (int i = 0; i < graph->getSize(); i++)
-	{
-		if ((*graph)[i]->getName() == str)
-			return (*graph)[i];
-	}
-}
-Vertex*& InputManager::getVertexByPosition(const Coords_T& position)
-{
-	for (int i = 0; i < graph->getSize(); i++)
-	{
-		if ((*graph)[i]->getPos() == position)
-			return (*graph)[i];
 	}
 }
 
@@ -254,5 +246,17 @@ void InputManager::run()
 	loadCities();
 	loadConnections();
 	loadPlanes();
+	destroyMap();
 }
 
+void InputManager::destroyMap()
+{
+	for (int y = 0; y < h; y++)
+	{
+		for (int x = 0; x < w; x++)
+		{
+			delete[] map[y];
+			map[y] = nullptr;
+		}
+	}
+}

@@ -34,7 +34,7 @@ public:
 
 	//operators
 	friend ostream& operator<<(ostream& os, const myString& s);
-	friend istream& operator>>(istream& os, myString& s);
+	friend istream& operator>>(istream& is, myString& s);
 	
 	bool operator==(const myString& s) const;
 

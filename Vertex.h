@@ -1,6 +1,7 @@
 #pragma once
 #include "myString.h"
 #include "Queue.h"
+#include "Graph.h"
 
 
 struct Coords_T {
@@ -27,7 +28,7 @@ private:
 public:
 	Vertex();
 	~Vertex();
-	
+
 	myString getName() const;
 	void setName(const myString& str);
 
@@ -35,4 +36,5 @@ public:
 	void setPos(const Coords_T& position);
 
 	void addConnection(Vertex*& dest, int distance);
+	Node<Connection_T>* getFirstConnection();
 };

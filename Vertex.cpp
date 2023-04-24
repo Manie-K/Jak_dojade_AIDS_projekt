@@ -16,3 +16,7 @@ void Vertex::addConnection(Vertex*& dest, int distance)
 	temp->data.weight = distance;
 	connectionList.addFirst(*temp);
 }
+Node<Connection_T>* Vertex::getFirstConnection()
+{
+	return connectionList.getFirst();
+}
