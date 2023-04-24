@@ -38,8 +38,14 @@ myString::myString(const myString& temp)
 
 void myString::pushCharAtEnd(const char ch)
 {
-	if (this == nullptr || data == nullptr)
+	if (data == nullptr || size == 0)
+	{
+		size = 2;
+		data = new char[size];
+		data[0] = ch;
+		data[1] = STR_END_KEY;
 		return;
+	}
 	if (ch != STR_END_KEY)
 	{
 		char* temp = new char[size];

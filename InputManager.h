@@ -6,6 +6,11 @@
 
 using namespace std;
 
+//when changing to hashTable, need to change:
+//Vertex*& getVertexByName(const myString& str);
+//Vertex*& getVertexByPosition(const Coords_T& position);
+//in loadCities, hash instead of citiesCounter
+
 class InputManager
 {
 private:

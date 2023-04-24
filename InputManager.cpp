@@ -34,9 +34,9 @@ bool InputManager::isEdgeOfCity(const Coords_T pos)
 
 myString InputManager::getCityName(const Coords_T pos)
 {
-	myString temp;
 	int x = pos.x;
 	const int y = pos.y;
+	myString temp;
 
 	while (x > 0 && isValidCityName(map[y][x - 1]))
 	{
@@ -123,9 +123,8 @@ void InputManager::setConnectionsOfVertex(Vertex*& vertex, bool** visits)
 		int distance;
 	} CoordsAndDistance;
 
-	const int x = vertex->getPos().x;
-	const int y = vertex->getPos().y;
-	Coords_T pos;
+	const int x = vertex->getPos().x, y = vertex->getPos().y;
+	Coords_T pos = { x,y };
 	Queue<CoordsAndDistance> path;
 	int distance = 0;
 
@@ -137,37 +136,36 @@ void InputManager::setConnectionsOfVertex(Vertex*& vertex, bool** visits)
 		CoordsAndDistance temp = path.pop();
 		distance = temp.distance;
 		pos = temp.pos;
-
-		if (map[pos.y][pos.x] == STAR_CHAR)
+		
+		if (map[pos.y][pos.x] == STAR_CHAR && (pos.y != y || pos.x != x))
 		{
 			Vertex* found = getVertexByPosition(pos);
 			vertex->addConnection(found, distance);
-			found->addConnection(vertex, distance);
 			continue;
 		}
 		distance++;
 
 		pos.x++;
-		if (visits[pos.y][pos.x] == false && map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR)
+		if (pos.x < w && visits[pos.y][pos.x] == false && (map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR))
 		{
 			visits[pos.y][pos.x] = true;
 			path.push({ pos,distance });
 		}
 		pos.x -= 2;
-		if (visits[pos.y][pos.x] == false && map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR)
+		if (pos.x >= 0 && visits[pos.y][pos.x] == false && (map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR))
 		{
 			visits[pos.y][pos.x] = true;
 			path.push({ pos,distance });
 		}
 		pos.x++;
 		pos.y++;
-		if (visits[pos.y][pos.x] == false && map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR)
+		if (pos.y < h && visits[pos.y][pos.x] == false && (map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR))
 		{
 			visits[pos.y][pos.x] = true;
 			path.push({ pos,distance });
 		}
 		pos.y -= 2;
-		if (visits[pos.y][pos.x] == false && map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR)
+		if (pos.y >= 0 && visits[pos.y][pos.x] == false && (map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR))
 		{
 			visits[pos.y][pos.x] = true;
 			path.push({ pos,distance });
@@ -210,19 +208,21 @@ void InputManager::loadCities()
 void InputManager::loadConnections()
 {
 	bool** visitArray = new bool* [h];
-	for (int i = 0; i < w; i++) {
+	for (int i = 0; i < h; i++) {
 		visitArray[i] = new bool[w];
-		for (int j = 0; j < h; j++)
-		{
-			visitArray[j][i] = false;
-		}
 	}
 
 	for (int i = 0; i < graph->getSize(); i++)
 	{
+		for (int y = 0; y < h; y++)
+		{
+			for (int x = 0; x < w; x++)
+			{
+				visitArray[y][x] = false;
+			}
+		}
 		setConnectionsOfVertex((*graph)[i], visitArray);
 	}
-
 	for (int i = 0; i < w; i++) {
 		delete visitArray[i];
 	}
@@ -250,9 +250,9 @@ Graph<Vertex>* InputManager::getGraph() const
 
 void InputManager::run()
 {
-		loadMap();
-		loadCities();
-		loadConnections();
-		loadPlanes();
+	loadMap();
+	loadCities();
+	loadConnections();
+	loadPlanes();
 }
 

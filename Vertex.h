@@ -25,21 +25,14 @@ private:
 	Coords_T pos;
 	List<Connection_T> connectionList;
 public:
-	Vertex():name(""),pos({0,0}){}
-	~Vertex() {};
+	Vertex();
+	~Vertex();
 	
-	myString getName() const { return name; }
-	void setName(const myString& str) { name = str; }
+	myString getName() const;
+	void setName(const myString& str);
 
-	Coords_T getPos() const { return pos; }
-	void setPos(const Coords_T& position) { pos = position; }
+	Coords_T getPos() const;
+	void setPos(const Coords_T& position);
 
-	void addConnection(Vertex*& dest, int distance)
-	{
-		Node<Connection_T>* temp = new Node<Connection_T>;
-		temp->data.dest = dest;
-		temp->data.weight = distance;
-		connectionList.addFirst(*temp);
-	}
-
+	void addConnection(Vertex*& dest, int distance);
 };

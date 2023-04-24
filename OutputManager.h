@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "Graph.h"
+#include "Vertex.h"
 #include "String.h"
 
 using namespace std;
