@@ -140,6 +140,15 @@ ostream& operator<<(ostream& os, const myString& s)
 	return os;
 }
 
+istream& operator>>(istream& is, myString& s)
+{
+	const int BUFFER_SIZE = 2048;
+	char buffer[BUFFER_SIZE];
+	is >> buffer;
+	s.data = buffer;
+	return is;
+}
+
 bool myString::operator==(const myString& s) const
 {
 	if (this == nullptr)
