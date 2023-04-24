@@ -24,12 +24,12 @@ public:
 	}
 	T pop()
 	{
-		if (size == 0)
-			return NULL;
-		Node<T> temp = *(list.getLast());
-		size--;
-		list.deleteLast();
-		return temp.data;
+		if (size > 0) {
+			Node<T> temp = *(list.getLast());
+			size--;
+			list.deleteLast();
+			return temp.data;
+		}
 	}
 	
 	void display() const

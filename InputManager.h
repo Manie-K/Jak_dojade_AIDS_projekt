@@ -1,29 +1,10 @@
 #pragma once
 #include <iostream>
 #include "Config.h"
-#include "myString.h"
 #include "Graph.h"
-#include "Queue.h"
+#include "Vertex.h"
 
 using namespace std;
-
-typedef struct {
-	int x, y;
-}Coords_T;
-
-struct Connection_T;
-
-typedef struct {
-	myString name;
-	Coords_T pos;
-	List<Connection_T> connectionList;
-}Vertex_T;
-
-struct Connection_T {
-	int weight;
-	Vertex_T* dest;
-};
-
 
 class InputManager
 {
@@ -31,7 +12,7 @@ private:
 	const int w, h;
 	int starCounter;
 	char **map;
-	Graph<Vertex_T>* graph;
+	Graph<Vertex>* graph;
 private:
 	bool isValidCityName(const char c)
 	{
@@ -60,7 +41,6 @@ private:
 
 		return temp;
 	}
-
 	myString getCity(const Coords_T pos)
 	{
 		int x = pos.x;
@@ -110,9 +90,80 @@ private:
 		}
 	}
 
-	void getConnection(Vertex_T*& vertex, bool** visits)
+	Vertex*& getVertexByName(const myString& str)
 	{
-		vertex->pos()
+		for (int i = 0; i < graph->getSize(); i++)
+		{
+			if ((*graph)[i]->getName() == str)
+				return (*graph)[i];
+		}
+	}
+	Vertex*& getVertexByPosition(const Coords_T& position)
+	{
+		for (int i = 0; i < graph->getSize(); i++)
+		{
+			if ((*graph)[i]->getPos() == position)
+				return (*graph)[i];
+		}
+	}
+
+	void getConnection(Vertex*& vertex, bool** visits)
+	{
+		typedef struct {
+			Coords_T pos;
+			int distance;
+		} CoordsAndDistance;
+
+		const int x= vertex->getPos().x;
+		const int y= vertex->getPos().y;
+		Coords_T pos;
+		Queue<CoordsAndDistance> path;
+		int distance = 0;
+
+		path.push({{x,y},distance });
+		
+		visits[pos.y][pos.x] = true;
+		
+
+		while (path.getSize() > 0){
+			CoordsAndDistance temp = path.pop();
+			distance = temp.distance;
+			pos = temp.pos;
+			
+			if (map[pos.y][pos.x] == STAR_CHAR)
+			{
+				Vertex* found = getVertexByPosition(pos);
+				vertex->addConnection(found, distance);
+				continue;
+			}
+			distance++;
+
+			pos.x++;
+			if (visits[pos.y][pos.x] == false && map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR)
+			{
+				visits[pos.y][pos.x] = true;
+				path.push({ pos,distance });
+			}
+			pos.x-=2;
+			if (visits[pos.y][pos.x] == false && map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR)
+			{
+				visits[pos.y][pos.x] = true;
+				path.push({ pos,distance });
+			}
+			pos.x++;
+			pos.y++;
+			if (visits[pos.y][pos.x] == false && map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR)
+			{
+				visits[pos.y][pos.x] = true;
+				path.push({ pos,distance });
+			}
+			pos.y -= 2;
+			if (visits[pos.y][pos.x] == false && map[pos.y][pos.x] == ROAD_CHAR || map[pos.y][pos.x] == STAR_CHAR)
+			{
+				visits[pos.y][pos.x] = true;
+				path.push({ pos,distance });
+			}
+		} 
 	}
 public:
 	InputManager(const int w, const int h) : w(w), h(h), starCounter(0), graph(nullptr)
@@ -138,7 +189,7 @@ public:
 		map = nullptr;
 	}
 
-	Graph<Vertex_T>* getGraph() const { return graph; }
+	Graph<Vertex>* getGraph() const { return graph; }
 
 	void loadMap() 
 	{
@@ -153,7 +204,7 @@ public:
 					starCounter++;
 			}
 		}
-		graph = new Graph<Vertex_T>(starCounter);
+		graph = new Graph<Vertex>(starCounter);
 	}
 	void loadCities()
 	{
@@ -164,9 +215,9 @@ public:
 			{
 				if (map[y][x] == STAR_CHAR)
 				{
-					Vertex_T *temp = new Vertex_T;
-					temp->pos = { x,y };
-					temp->name = getCity(temp->pos);
+					Vertex *temp = new Vertex;
+					temp->setPos({ x,y });
+					temp->setName(getCity(temp->getPos()));
 					(*graph)[citiesCounter] = temp;
 					citiesCounter++;
 				}

@@ -10,9 +10,8 @@ private:
 private:
 	T*& getAtIndex(int index) 
 	{
-		if (index < 0 || index >= vertexCount)
-			return nullptr;
-		return vertices[index];
+		if (index >= 0 && index < vertexCount)
+			return vertices[index];
 	}
 public:
 	Graph(int size) :vertexCount(size), vertices(new T* [size]) {};
@@ -28,6 +27,7 @@ public:
 	}
 
 	int getSize() const { return vertexCount; }
+
 
 	T*& operator[](int index)
 	{
