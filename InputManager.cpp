@@ -31,6 +31,8 @@ Vertex*& InputManager::getVertexByName(const myString& str)
 		if ((*graph)[i]->getName() == str)
 			return (*graph)[i];
 	}
+	Vertex* nullReturn = new Vertex;
+	return nullReturn;
 }
 Vertex*& InputManager::getVertexByPosition(const Coords_T& position)
 {
@@ -39,6 +41,8 @@ Vertex*& InputManager::getVertexByPosition(const Coords_T& position)
 		if ((*graph)[i]->getPos() == position)
 			return (*graph)[i];
 	}
+	Vertex* nullReturn = new Vertex;
+	return nullReturn;
 }
 
 myString InputManager::getCityName(const Coords_T pos)
@@ -106,6 +110,7 @@ myString InputManager::getCity(const Coords_T pos)
 	{
 		return getCityName({ x - 1,y + 1 });
 	}
+	return "";
 }
 
 void InputManager::setConnectionsOfVertex(Vertex*& vertex, bool** visits)

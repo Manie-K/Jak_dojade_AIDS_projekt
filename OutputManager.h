@@ -20,6 +20,7 @@ private:
 			if ((*graph)[i]->getName() == str)
 				return i;
 		}
+		return -1;
 	}
 	int getIndexByPosition(const Coords_T& position) const
 	{
@@ -28,14 +29,15 @@ private:
 			if ((*graph)[i]->getPos() == position)
 				return i;
 		}
+		return -1;
 	}
 	
 	int djikstra(const myString& srcName, const myString& destName,myString& path) const
 	{
 		const int size = graph->getSize();
 		const int destIndex = getIndexByName(destName);
-		int pathIndex = 0;
 		int currentIndex = getIndexByName(srcName);
+		int srcIndex = currentIndex;
 		int previousIndex = currentIndex;
 		int *distances = new int[size];
 		int *lastVisitsIndexes = new int[size];
@@ -57,6 +59,7 @@ private:
 					int tempDistance = neighbour->data.weight + distances[currentIndex];
 					if(tempDistance < distances[tempIndex] && visited[tempIndex] == false) {
 						distances[tempIndex] = tempDistance;
+						lastVisitsIndexes[tempIndex] = currentIndex;
 					}
 				}
 				neighbour = neighbour->next;
@@ -75,22 +78,28 @@ private:
 			}
 			previousIndex = currentIndex;
 			currentIndex = newIndex;
-			//tutaj blad
-			lastVisitsIndexes[currentIndex] = previousIndex;
 		}
 		int returnDistance = distances[destIndex];
 		
 		int x = destIndex;
-		while (lastVisitsIndexes[x]!=-1)
+		int pathIndex = 0;
+		myString* pathArray = new myString[size];
+		while (lastVisitsIndexes[x]!=-1 && lastVisitsIndexes[x]!=srcIndex)
 		{
 			x = lastVisitsIndexes[x];
-			path += " ";
-			path += (*graph)[x]->getName();
+			pathArray[pathIndex++] = (*graph)[x]->getName();
 		}
-		//
+		
+		while (pathIndex >= 0)
+		{
+			path += " ";
+			path += pathArray[pathIndex--];
+		}
+
 		delete[] distances;
 		delete[] visited;
 		delete[] lastVisitsIndexes;
+		delete[] pathArray;
 		return returnDistance;
 	}
 public:

@@ -12,6 +12,8 @@ private:
 	{
 		if (index >= 0 && index < vertexCount)
 			return vertices[index];
+		T* nullReturn = new T;
+		return nullReturn;
 	}
 public:
 	Graph(int size) :vertexCount(size), vertices(new T* [size]) {};

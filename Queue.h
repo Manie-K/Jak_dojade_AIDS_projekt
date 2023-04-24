@@ -27,6 +27,7 @@ public:
 			list.deleteLast();
 			return temp.data;
 		}
+		return T();
 	}
 	
 	void display() const
