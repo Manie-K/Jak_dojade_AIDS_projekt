@@ -203,6 +203,25 @@ myString& myString::operator=(const char* s)
 	return *this;
 }
 
+myString& myString::operator+=(const myString& s)
+{
+	char* oldData = new char[size];
+	for (int i = 0; i < size; i++)
+		oldData[i] = data[i];
+	delete[] data;
+	int oldSize = size;
+	size = size + s.size - 1;
+	data = new char[size];
+	int i;
+	for (i = 0; i < oldSize - 1; i++)
+		data[i] = oldData[i];
+	for (i = oldSize - 1; i < size; i++)
+		data[i] = s.data[i - oldSize + 1];
+	data[size - 1] = STR_END_KEY;
+	delete[] oldData;
+	return *this;
+}
+
 char myString::operator[](size_t index) const
 {
 	if (this == nullptr || data == nullptr)

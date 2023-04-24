@@ -30,7 +30,7 @@ private:
 		}
 	}
 	
-	int djikstra(const myString& srcName, const myString& destName) const 
+	int djikstra(const myString& srcName, const myString& destName,myString& path) const
 	{
 		const int size = graph->getSize();
 		const int destIndex = getIndexByName(destName);
@@ -51,11 +51,10 @@ private:
 			{
 				if (neighbour->data.dest != nullptr) {
 					int tempIndex = getIndexByName(neighbour->data.dest->getName());
-					int tempDistance = neighbour->data.weight + distances[previousIndex];
+					int tempDistance = neighbour->data.weight + distances[currentIndex];
 					if(tempDistance < distances[tempIndex] && visited[tempIndex] == false) {
 						distances[tempIndex] = tempDistance;
 					}
-					visited[tempIndex] = true;
 				}
 				neighbour = neighbour->next;
 			}
@@ -65,7 +64,6 @@ private:
 			for (int i = 0; i < size; i++)
 			{
 				int tmpInd = getIndexByName((*graph)[i]->getName());
-				//tu blad, dystans ma byc od current :(
 				if (visited[tmpInd] == false && distances[tmpInd] < min)
 				{
 					newIndex = tmpInd;
@@ -74,9 +72,12 @@ private:
 			}
 			previousIndex = currentIndex;
 			currentIndex = newIndex;
+			path += (*graph)[newIndex]->getName();
+			path += " ";
 		}
 		int returnDistance = distances[destIndex];
 		delete[] distances;
+		delete[] visited;
 		return returnDistance;
 	}
 public:
@@ -85,15 +86,15 @@ public:
 
 	void run()
 	{
-		myString src, dest, type;
+		myString src, dest, type, path="";
 		for (int i = 0; i < testCount; i++) {
 			cin >> src >> dest >> type;
-			int distance = djikstra(src, dest);
+			int distance = djikstra(src, dest,path);
 			if (type == "0")
 				cout << distance << '\n';
 			else if (type == "1")
 			{
-				
+				cout << distance << path <<'\n';
 			}
 		}
 

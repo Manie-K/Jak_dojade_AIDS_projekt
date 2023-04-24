@@ -40,6 +40,7 @@ public:
 
 	myString& operator=(const myString& s);
 	myString& operator=(const char* s);
+	myString& operator+=(const myString& s);
 	
 	char operator[](size_t index) const;
 };
