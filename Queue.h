@@ -26,7 +26,7 @@ public:
 			size--;
 			list.deleteLast();
 			return temp.data;
-		}
+		} 
 		return T();
 	}
 	
