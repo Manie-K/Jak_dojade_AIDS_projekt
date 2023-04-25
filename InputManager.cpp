@@ -136,7 +136,8 @@ void InputManager::setConnectionsOfVertex(Vertex*& vertex, bool** visits)
 
 	visits[pos.y][pos.x] = true;
 
-	while (path.getSize() > 0) {
+	while (path.getSize() > 0) 
+	{
 		CoordsAndDistance temp = path.pop();
 		distance = temp.distance;
 		pos = temp.pos;
@@ -220,10 +221,11 @@ void InputManager::loadConnections()
 	{
 		for (int y = 0; y < h; y++)
 		{
-			for (int x = 0; x < w; x++)
+			memset(visitArray[y], false, w);
+			/*for (int x = 0; x < w; x++)
 			{
 				visitArray[y][x] = false;
-			}
+			}*/
 		}
 		setConnectionsOfVertex((*graph)[i], visitArray);
 	}
@@ -255,10 +257,15 @@ Graph<Vertex>* InputManager::getGraph() const
 void InputManager::run()
 {
 	loadMap();
+	cout << '\n' << "ZALADOWANO MAPE";
 	loadCities();
+	cout << '\n' << "ZALADOWANO MIASTA";
 	loadConnections();
+	cout << '\n' << "ZALADOWANO SCIEZKI";
 	loadPlanes();
+	cout << '\n' << "ZALADOWANO SAMOLOTY";
 	destroyMap();
+	cout << '\n' << "USUNIETO MAPE";
 }
 
 void InputManager::destroyMap()

@@ -10,6 +10,8 @@ using namespace std;
 //Vertex*& getVertexByName(const myString& str);
 //Vertex*& getVertexByPosition(const Coords_T& position);
 //in loadCities, hash instead of citiesCounter
+//Need to change (*graph)[i] in these functions +
+//in loadConnections function and traverse the graph in different way
 
 class InputManager
 {

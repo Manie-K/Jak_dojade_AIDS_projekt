@@ -30,7 +30,7 @@ public:
 	{
 		if (size == 0)
 		{
-			first = new Node<T>(node);
+			first = &node;
 			first->next = nullptr;
 			first->prev = nullptr;
 			last = first;
