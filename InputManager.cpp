@@ -100,7 +100,7 @@ myString InputManager::getCity(const Coords_T pos)
 		return getCityName({ x - 1,y - 1 });
 	}
 	//topRight
-	if (x < w - 1 && y > 0 && isValidCityName(map[y - 1][x + 1]) && isEdgeOfCity({ x - 1,y + 1 }))
+	if (x < w - 1 && y > 0 && isValidCityName(map[y - 1][x + 1]) && isEdgeOfCity({ x + 1,y - 1 }))
 	{
 		return getCityName({ x + 1,y - 1 });
 	}
@@ -118,6 +118,7 @@ myString InputManager::getCity(const Coords_T pos)
 	}
 	return "";
 }
+
 
 void InputManager::setConnectionsOfVertex(Vertex*& vertex, bool** visits)
 {
@@ -193,7 +194,7 @@ void InputManager::loadMap()
 }
 void InputManager::loadCities()
 {
-	int citiesCounter = 0;
+	int index = 0;
 	for (int y = 0; y < h; y++)
 	{
 		for (int x = 0; x < w; x++)
@@ -203,7 +204,7 @@ void InputManager::loadCities()
 				Vertex* temp = new Vertex;
 				temp->setPos({ x,y });
 				temp->setName(getCity(temp->getPos()));
-				(*graph)[citiesCounter++] = temp;//tutaj dac hashujaca
+				(*graph)[index++] = temp;
 			}
 		}
 	}

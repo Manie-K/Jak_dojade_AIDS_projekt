@@ -30,10 +30,6 @@ myString::myString(const myString& temp)
 		data = nullptr;
 		return;
 	}
-	if (temp.data == "EE")
-	{
-		int b;
-	}
 	size = temp.size;
 	data = new char[size];
 	int actualSize = 0;

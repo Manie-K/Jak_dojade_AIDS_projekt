@@ -4,7 +4,8 @@ int OutputManager::getIndexByName(const myString& str) const
 {
 	for (int i = 0; i < graph->getSize(); i++)
 	{
-		if ((*graph)[i]->getName() == str)
+		myString tmp = (*graph)[i]->getName();
+		if (tmp == str)
 			return i;
 	}
 	return -1;

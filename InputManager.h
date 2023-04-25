@@ -36,7 +36,9 @@ private:
 	void loadPlanes();
 
 	void destroyMap();
+
 public:
+	//int hash(const myString& key);
 	InputManager(const int w, const int h);
 	~InputManager();
 
