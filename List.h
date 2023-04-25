@@ -21,7 +21,7 @@ public:
 		size = 0;
 	}
 
-	size_t getSize() { 
+	size_t getSize() const { 
 		if (first == nullptr)
 			return 0;
 		return size; 

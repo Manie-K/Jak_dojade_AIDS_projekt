@@ -203,7 +203,7 @@ void InputManager::loadCities()
 				Vertex* temp = new Vertex;
 				temp->setPos({ x,y });
 				temp->setName(getCity(temp->getPos()));
-				(*graph)[citiesCounter++] = temp;
+				(*graph)[citiesCounter++] = temp;//tutaj dac hashujaca
 			}
 		}
 	}

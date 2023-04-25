@@ -24,16 +24,28 @@ myString::myString(const char* newData)
 
 myString::myString(const myString& temp)
 {
-	if (temp == nullptr)
+	if (temp.size == 0)
 	{
 		size = 0;
 		data = nullptr;
 		return;
 	}
+	if (temp.data == "EE")
+	{
+		int b;
+	}
 	size = temp.size;
 	data = new char[size];
-	for (int i = 0; i < size; i++)
-		data[i] = temp.data[i];
+	int actualSize = 0;
+	for (int i = 0; i < size; i++) {
+		if (temp.data[i] != '\xFD') {
+			data[i] = temp.data[i];
+			actualSize++;
+		}
+		else i--;
+	}
+	size = actualSize;
+	data[size - 1] = STR_END_KEY;
 }
 
 void myString::pushCharAtEnd(const char ch)
