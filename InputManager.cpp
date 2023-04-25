@@ -21,7 +21,13 @@ bool InputManager::isValidCityName(const char c)
 }
 bool InputManager::isEdgeOfCity(const Coords_T pos)
 {
-	return !(isValidCityName(map[pos.y][pos.x - 1]) && isValidCityName(map[pos.y][pos.x + 1]));
+	if (pos.y >= 0 && pos.y < h) {
+		if (pos.x - 1 >= 0 && pos.x + 1 < w)
+			return !(isValidCityName(map[pos.y][pos.x - 1]) && isValidCityName(map[pos.y][pos.x + 1]));
+		else
+			return true;
+	}
+	return false;
 }
 
 Vertex*& InputManager::getVertexByName(const myString& str)
@@ -220,8 +226,8 @@ void InputManager::loadConnections()
 		}
 		setConnectionsOfVertex((*graph)[i], visitArray);
 	}
-	for (int i = 0; i < w; i++) {
-		delete visitArray[i];
+	for (int i = 0; i < h; i++) {
+		delete []visitArray[i];
 	}
 	delete[]visitArray;
 }

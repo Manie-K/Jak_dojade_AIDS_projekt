@@ -118,8 +118,7 @@ void myString::trim()
 }
 
 int myString::toInt() const
-{
-	if (data == "") 
+{	if(size == 0) 
 		return 0;
 	const int asciiOffset = 48;
 	int result = 0;
