@@ -2,22 +2,31 @@
 
 int OutputManager::getIndexByName(const myString& str) const
 {
-	for (int i = 0; i < graph->getSize(); i++)
-	{
-		myString tmp = (*graph)[i]->getName();
-		if (tmp == str)
-			return i;
-	}
-	return -1;
+	return hash(str);
 }
 int OutputManager::getIndexByPosition(const Coords_T& position) const
 {
 	for (int i = 0; i < graph->getSize(); i++)
 	{
-		if ((*graph)[i]->getPos() == position)
-			return i;
+		Node<Vertex*>* tempNode = (*graph)[i].getFirst();
+		while (tempNode != nullptr && (*graph)[i].getSize() > 0) {
+			if (tempNode->data->getPos() == position)
+				return i;
+			tempNode = tempNode->next;
+		}
 	}
-	return -1;
+	return - 1;
+}
+
+int OutputManager::hash(const myString& key) const
+{
+	long long hashValue = 0;
+	char c;
+	for (int i = 0; i < key.getSize(); i++) {
+		c = key[i];
+		hashValue = hashValue * 31 + c;
+	}
+	return hashValue % graph->getSize();
 }
 
 int OutputManager::djikstra(const myString& srcName, const myString& destName, myString& path, bool commandTypeOne) const
@@ -57,7 +66,7 @@ int OutputManager::djikstra(const myString& srcName, const myString& destName, m
 		int min = maxIntValue;
 		for (int i = 0; i < size; i++)
 		{
-			int tmpInd = getIndexByName((*graph)[i]->getName()); //mozna bez tego?
+			int tmpInd = getIndexByName((*graph)[i]->getName());
 			if (visited[tmpInd] == false && distances[tmpInd] < min)
 			{
 				newIndex = tmpInd;

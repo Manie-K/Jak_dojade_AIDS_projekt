@@ -18,6 +18,7 @@ class InputManager
 private:
 	const int w, h;
 	int starCounter;
+	int hashtagCounter;
 	char **map;
 	Graph<Vertex>* graph;
 private:
@@ -38,9 +39,8 @@ private:
 	void loadPlanes();
 
 	void destroyMap();
-
+	int hash(const myString& key) const;
 public:
-	//int hash(const myString& key);
 	InputManager(const int w, const int h);
 	~InputManager();
 

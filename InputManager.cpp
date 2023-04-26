@@ -1,6 +1,6 @@
 #include "InputManager.h"
 
-InputManager::InputManager(const int w, const int h) : w(w), h(h), starCounter(0), graph(nullptr)
+InputManager::InputManager(const int w, const int h) : w(w), h(h), starCounter(0),hashtagCounter(0), graph(nullptr)
 {
 	map = new char* [h];
 	for (int y = 0; y < h; y++)
@@ -30,22 +30,37 @@ bool InputManager::isEdgeOfCity(const Coords_T pos)
 	return false;
 }
 
+int InputManager::hash(const myString& key) const
+{
+	long long hashValue = 0;
+	char c;
+	for (int i = 0; i < key.getSize();i++) {
+		c = key[i];
+		hashValue = hashValue * 31 + c;
+	}
+	return hashValue % graph->getSize();
+}
+
 Vertex*& InputManager::getVertexByName(const myString& str)
 {
-	for (int i = 0; i < graph->getSize(); i++)
-	{
-		if ((*graph)[i]->getName() == str)
-			return (*graph)[i];
+	int index = hash(str);
+	Node<Vertex*>* tempNode = (*graph)[index].getFirst();
+	while (tempNode != nullptr && (*graph)[index].getSize() > 0) {
+		if (tempNode->data->getName() == str)
+			return tempNode->data;
+		tempNode = tempNode->next;
 	}
-	Vertex* nullReturn = new Vertex;
-	return nullReturn;
 }
 Vertex*& InputManager::getVertexByPosition(const Coords_T& position)
 {
 	for (int i = 0; i < graph->getSize(); i++)
 	{
-		if ((*graph)[i]->getPos() == position)
-			return (*graph)[i];
+		Node<Vertex*>* tempNode = (*graph)[i].getFirst();
+		while (tempNode != nullptr && (*graph)[i].getSize() > 0) {
+			if (tempNode->data->getPos() == position)
+				return tempNode->data;
+			tempNode = tempNode->next;
+		}
 	}
 	Vertex* nullReturn = new Vertex;
 	return nullReturn;
@@ -189,13 +204,15 @@ void InputManager::loadMap()
 			map[y][x] = temp;
 			if (temp == STAR_CHAR)
 				starCounter++;
+			else if (temp == ROAD_CHAR)
+				hashtagCounter++;
 		}
 	}
-	graph = new Graph<Vertex>(starCounter);
+	graph = new Graph<Vertex>(starCounter*GRAPH_CAPACITY_MULTIPLIER);
 }
 void InputManager::loadCities()
 {
-	int index = 0;
+	int index;
 	for (int y = 0; y < h; y++)
 	{
 		for (int x = 0; x < w; x++)
@@ -205,7 +222,9 @@ void InputManager::loadCities()
 				Vertex* temp = new Vertex;
 				temp->setPos({ x,y });
 				temp->setName(getCity(temp->getPos()));
-				(*graph)[index++] = temp;
+				Node<Vertex*>* tempNode = new Node<Vertex*>(temp);
+				index = hash(temp->getName());
+				(*graph)[index].addFirst(*tempNode);
 			}
 		}
 	}
@@ -213,25 +232,23 @@ void InputManager::loadCities()
 void InputManager::loadConnections()
 {
 	bool** visitArray = new bool* [h];
-	for (int i = 0; i < h; i++) {
+	for (int i = 0; i < h; i++)
 		visitArray[i] = new bool[w];
-	}
 
 	for (int i = 0; i < graph->getSize(); i++)
 	{
-		for (int y = 0; y < h; y++)
-		{
-			memset(visitArray[y], false, w);
-			/*for (int x = 0; x < w; x++)
+		Node<Vertex*>* tempNode = (*graph)[i].getFirst();
+		while (tempNode != nullptr && (*graph)[i].getSize() > 0) {
+			for (int y = 0; y < h; y++)
 			{
-				visitArray[y][x] = false;
-			}*/
+				memset(visitArray[y], false, w);
+			}
+			setConnectionsOfVertex(tempNode->data, visitArray);
+			tempNode = tempNode->next;
 		}
-		setConnectionsOfVertex((*graph)[i], visitArray);
 	}
-	for (int i = 0; i < h; i++) {
+	for (int i = 0; i < h; i++)
 		delete []visitArray[i];
-	}
 	delete[]visitArray;
 }
 void InputManager::loadPlanes()
@@ -260,7 +277,8 @@ void InputManager::run()
 	cout << '\n' << "ZALADOWANO MAPE";
 	loadCities();
 	cout << '\n' << "ZALADOWANO MIASTA";
-	loadConnections();
+	if(hashtagCounter>0)
+		loadConnections();
 	cout << '\n' << "ZALADOWANO SCIEZKI";
 	loadPlanes();
 	cout << '\n' << "ZALADOWANO SAMOLOTY";

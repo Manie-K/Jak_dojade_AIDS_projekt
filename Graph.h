@@ -1,14 +1,15 @@
 #pragma once
+#include "List.h"
 
 template<typename T>
 class Graph 
 {
 private:
 	int vertexCount;
-	T** vertices;
+	List<T*>* vertices;
 
 private:
-	T*& getAtIndex(int index) 
+	List<T*>& getAtIndex(int index)
 	{
 		if (index >= 0 && index < vertexCount)
 			return vertices[index];
@@ -16,7 +17,7 @@ private:
 		return nullReturn;
 	}
 public:
-	Graph(int size) :vertexCount(size), vertices(new T* [size]) {};
+	Graph(int size) :vertexCount(size), vertices(new List<T*> [size]) {};
 	~Graph()
 	{
 		for (int i = 0; i < vertexCount; i++)
@@ -30,7 +31,7 @@ public:
 
 	int getSize() const { return vertexCount; }
 
-	T*& operator[](int index)
+	List<T*>& operator[](int index)
 	{
 		return getAtIndex(index);
 	};
