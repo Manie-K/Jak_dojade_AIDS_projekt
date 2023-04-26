@@ -1,13 +1,26 @@
 #pragma once
 //#include "Vector.h"
 //implementation with array not vector, updating not adding new items
-template<typename T>
+struct HeapItem {
+	int distance;
+	int index;
+	bool visited;
+	bool operator>(const HeapItem& other)
+	{
+		return distance > other.distance;
+	}
+
+	bool operator<(const HeapItem& other)
+	{
+		return distance < other.distance;
+	}
+};
 class MinHeap
 {
 private:
-	T* array;
+	HeapItem* array;
 	int size;
-	const int cap;
+	int cap;
 private:
 	void minimalHeapifyDown(int index)
 	{
@@ -32,64 +45,59 @@ private:
 			index = parentIndex(index);
 		}
 	}
-	void swap(T* a, T* b)
+	void swap(HeapItem* a, HeapItem* b)
 	{
-		T temp = *b;
+		HeapItem temp = *b;
 		*b = *a;
 		*a = temp;
 	}
 	int parentIndex(int index) { return (index - 1) / 2; }
 	int rightChildIndex(int index) { return 2 * index + 2; }
 	int leftChildIndex(int index) { return 2 * index + 1; }
-	void decreaseValue(int index, T value)
-	{
-		array[index] = value;
-		minimalHeapifyUp(index);
-	}
-	int findByValue(T value)
-	{
-		for (int i = 0; i < size; i++)
-		{
-			if (array[i] == value)
-				return i;
-		}
-		return -1;
-	}
 public:
-	MinHeap(int capacity):array(new T[capacity]), size(0), cap(capacity){}
+	MinHeap(int capacity):array(new HeapItem[capacity]), size(0), cap(capacity){}
 	~MinHeap() { delete[]array; }
 
 	bool isEmpty() const { return size <= 0; }
-	void update(T valToFind, T newVal)
-	{
-		int index = findByValue(valToFind);
-		decreaseValue(index, newVal);
-	}
-	void push(T item)
+	void push(HeapItem item)
 	{
 		if (size >= cap)
-			return;
+		{
+			HeapItem* tempArray = new HeapItem[size];
+			for (int i = 0; i < size; i++)
+			{
+				tempArray[i] = array[i];
+			}
+			delete[] array;
+			cap *= 2;
+			array = new HeapItem[cap];
+			for (int i = 0; i < size; i++)
+			{
+				array[i] = tempArray[i];
+			}
+			delete[] tempArray;
+		}
 		size++;
 		int index = size - 1;
 		array[index] = item;
 		minimalHeapifyUp(index);
 	}
-	T getMin()
+	HeapItem getMin()
 	{
 		if(size>0)
 			return array[0];
-		return T();
+		return HeapItem();
 	}
-	T popMin()
+	HeapItem popMin()
 	{
 		if (size <= 0)
-			return T();
+			return HeapItem();
 		if (size == 1)
 		{
 			size--;
 			return array[0];
 		}
-		T tempReturn = array[0];
+		HeapItem tempReturn = array[0];
 		array[0] = array[size - 1];
 		size--;
 		minimalHeapifyDown(0);

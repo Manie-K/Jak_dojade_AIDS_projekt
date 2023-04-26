@@ -34,20 +34,6 @@ int OutputManager::hash(const myString& key) const
 
 int OutputManager::findPath(const myString& srcName, const myString& destName, myString& path, bool commandTypeOne) const
 {
-	struct HeapItem {
-		int distance;
-		int index;
-		bool visited;
-		bool operator>(const HeapItem& other)
-		{
-			return distance > other.distance;
-		}
-
-		bool operator<(const HeapItem& other)
-		{
-			return distance < other.distance;
-		}
-	};
 	const int size = graph->getSize();
 	const int destIndex = getIndexByName(destName);
 	int currentIndex = getIndexByName(srcName);
@@ -69,7 +55,7 @@ int OutputManager::findPath(const myString& srcName, const myString& destName, m
 
 	distances[currentIndex] = 0;
 
-	MinHeap<HeapItem> heap(graph->getSize());
+	MinHeap heap(graph->getSize());
 	//heap.push({ 0,srcIndex,false });
 
 	while (true)
