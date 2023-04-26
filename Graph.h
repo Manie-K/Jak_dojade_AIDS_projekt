@@ -1,15 +1,23 @@
 #pragma once
-#include "List.h"
+#include "HashMap.h"
+#include "Config.h"
+#include "myString.h"
 
-template<typename T>
+struct HashMapItem {
+	const myString name;
+	int index;
+	HashMapItem(const myString* str):name(*str){}
+};
+
+template<typename T, typename hashType>
 class Graph 
 {
 private:
 	int vertexCount;
-	List<T*>* vertices;
-
+	T** vertices;
+	HashMap<hashType> hashMap;
 private:
-	List<T*>& getAtIndex(int index)
+	T*& getAtIndex(int index)
 	{
 		if (index >= 0 && index < vertexCount)
 			return vertices[index];
@@ -17,7 +25,7 @@ private:
 		return nullReturn;
 	}
 public:
-	Graph(int size) :vertexCount(size), vertices(new List<T*> [size]) {};
+	Graph(int size) :vertexCount(size), vertices(new T*[size]), hashMap(HashMap<hashType>(size*GRAPH_CAPACITY_MULTIPLIER)) {};
 	~Graph()
 	{
 		for (int i = 0; i < vertexCount; i++)
@@ -25,13 +33,14 @@ public:
 			delete vertices[i];
 			vertices[i] = nullptr;
 		}
-		delete vertices;
+		delete []vertices;
 		vertices = nullptr;
 	}
 
+	HashMap<hashType>& getHashMap() { return hashMap; }
 	int getSize() const { return vertexCount; }
 
-	List<T*>& operator[](int index)
+	T*& operator[](int index)
 	{
 		return getAtIndex(index);
 	};

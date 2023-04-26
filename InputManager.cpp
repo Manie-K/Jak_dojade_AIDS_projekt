@@ -1,6 +1,6 @@
 #include "InputManager.h"
 
-InputManager::InputManager(const int w, const int h) : w(w), h(h), starCounter(0),hashtagCounter(0), graph(nullptr)
+InputManager::InputManager(const int w, const int h) : w(w), h(h), starCounter(0),hashtagExist(false), graph(nullptr)
 {
 	map = new char* [h];
 	for (int y = 0; y < h; y++)
@@ -38,32 +38,37 @@ int InputManager::hash(const myString& key) const
 		c = key[i];
 		hashValue = hashValue * 31 + c;
 	}
-	return hashValue % graph->getSize();
+	return hashValue % graph->getHashMap().getSize();
 }
 
 Vertex*& InputManager::getVertexByName(const myString& str)
 {
-	int index = hash(str);
-	Node<Vertex*>* tempNode = (*graph)[index].getFirst();
-	while (tempNode != nullptr && (*graph)[index].getSize() > 0) {
-		if (tempNode->data->getName() == str)
-			return tempNode->data;
-		tempNode = tempNode->next;
+	int index = 0;
+	int hashIndex = hash(str);
+	Node<HashMapItem>* temp = graph->getHashMap()[hashIndex].getFirst();
+	while (temp != nullptr)
+	{
+		if (temp->data.name == str)
+		{
+			index = temp->data.index;
+			break;
+		}
+		temp = temp->next;
 	}
+	return (*graph)[index];
 }
 Vertex*& InputManager::getVertexByPosition(const Coords_T& position)
 {
+	int index = 0;
 	for (int i = 0; i < graph->getSize(); i++)
 	{
-		Node<Vertex*>* tempNode = (*graph)[i].getFirst();
-		while (tempNode != nullptr && (*graph)[i].getSize() > 0) {
-			if (tempNode->data->getPos() == position)
-				return tempNode->data;
-			tempNode = tempNode->next;
+		if ((*graph)[i]->getPos() == position)
+		{
+			index = i;
+			break;
 		}
 	}
-	Vertex* nullReturn = new Vertex;
-	return nullReturn;
+	return (*graph)[index];
 }
 
 myString InputManager::getCityName(const Coords_T pos)
@@ -205,14 +210,14 @@ void InputManager::loadMap()
 			if (temp == STAR_CHAR)
 				starCounter++;
 			else if (temp == ROAD_CHAR)
-				hashtagCounter++;
+				hashtagExist = true;
 		}
 	}
-	graph = new Graph<Vertex>(starCounter*GRAPH_CAPACITY_MULTIPLIER);
+	graph = new Graph<Vertex, HashMapItem>(starCounter);
 }
 void InputManager::loadCities()
 {
-	int index;
+	int citiesCount = 0, index = 0;
 	for (int y = 0; y < h; y++)
 	{
 		for (int x = 0; x < w; x++)
@@ -222,33 +227,40 @@ void InputManager::loadCities()
 				Vertex* temp = new Vertex;
 				temp->setPos({ x,y });
 				temp->setName(getCity(temp->getPos()));
-				Node<Vertex*>* tempNode = new Node<Vertex*>(temp);
-				index = hash(temp->getName());
-				(*graph)[index].addFirst(*tempNode);
+
+				const myString name = temp->getName();
+				index = hash(name);
+
+				HashMapItem tempItem(&name);
+				tempItem.index = citiesCount;
+				Node<HashMapItem>* tempHashItem = new Node<HashMapItem>(tempItem);
+				
+				(*graph)[citiesCount++] = temp;
+				graph->getHashMap()[index].addFirst(*tempHashItem);
 			}
 		}
 	}
 }
 void InputManager::loadConnections()
 {
+	if (!hashtagExist)
+		return;
 	bool** visitArray = new bool* [h];
-	for (int i = 0; i < h; i++)
+	for (int i = 0; i < h; i++) {
 		visitArray[i] = new bool[w];
+	}
 
 	for (int i = 0; i < graph->getSize(); i++)
 	{
-		Node<Vertex*>* tempNode = (*graph)[i].getFirst();
-		while (tempNode != nullptr && (*graph)[i].getSize() > 0) {
-			for (int y = 0; y < h; y++)
-			{
-				memset(visitArray[y], false, w);
-			}
-			setConnectionsOfVertex(tempNode->data, visitArray);
-			tempNode = tempNode->next;
+		for (int y = 0; y < h; y++)
+		{
+			memset(visitArray[y], false, sizeof(bool)*w);
 		}
+		setConnectionsOfVertex((*graph)[i], visitArray);
 	}
-	for (int i = 0; i < h; i++)
-		delete []visitArray[i];
+	for (int i = 0; i < h; i++) {
+		delete[]visitArray[i];
+	}
 	delete[]visitArray;
 }
 void InputManager::loadPlanes()
@@ -266,7 +278,7 @@ void InputManager::loadPlanes()
 	}
 }
 
-Graph<Vertex>* InputManager::getGraph() const 
+Graph<Vertex,HashMapItem>* InputManager::getGraph() const 
 { 
 	return graph; 
 }
@@ -274,16 +286,10 @@ Graph<Vertex>* InputManager::getGraph() const
 void InputManager::run()
 {
 	loadMap();
-	cout << '\n' << "ZALADOWANO MAPE";
 	loadCities();
-	cout << '\n' << "ZALADOWANO MIASTA";
-	if(hashtagCounter>0)
-		loadConnections();
-	cout << '\n' << "ZALADOWANO SCIEZKI";
+	loadConnections();
 	loadPlanes();
-	cout << '\n' << "ZALADOWANO SAMOLOTY";
 	destroyMap();
-	cout << '\n' << "USUNIETO MAPE";
 }
 
 void InputManager::destroyMap()

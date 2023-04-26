@@ -7,28 +7,28 @@ using namespace std;
 int main()
 {
 	int w, h, testCount;
-	clock_t begin, end;
+	//clock_t begin, end;
 
 	cin >> w >> h;
 
-	begin = clock();
+	//begin = clock();
 	InputManager input(w, h);
 	input.run();
-	end = clock();
+	//end = clock();
 
-	double inputTime = double(end - begin) / CLOCKS_PER_SEC;
+	//double inputTime = double(end - begin) / CLOCKS_PER_SEC;
 	
 	cin >> testCount;
-	begin = clock();
+	//begin = clock();
 	OutputManager output(testCount,input.getGraph());
 	output.run();
-	end = clock();
+	//end = clock();
 
-	double outputTime = double(end - begin) / CLOCKS_PER_SEC;
+	//double outputTime = double(end - begin) / CLOCKS_PER_SEC;
 
-	cout << "\n\n\n";
-	cout << "Input time: " << inputTime << '\n';
-	cout << "Output time: " << outputTime << '\n';
+	//cout << "\n\n\n";
+	//cout << "Input time: " << inputTime << '\n';
+	//cout << "Output time: " << outputTime << '\n';
 
 	return 1;
 }

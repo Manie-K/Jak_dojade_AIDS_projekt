@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include "Config.h"
-#include "Graph.h"
 #include "Vertex.h"
 
 using namespace std;
@@ -18,9 +17,9 @@ class InputManager
 private:
 	const int w, h;
 	int starCounter;
-	int hashtagCounter;
+	bool hashtagExist;
 	char **map;
-	Graph<Vertex>* graph;
+	Graph<Vertex, HashMapItem>* graph;
 private:
 	bool isValidCityName(const char c);
 	bool isEdgeOfCity(const Coords_T pos);
@@ -45,6 +44,6 @@ public:
 	~InputManager();
 
 	void run();
-	Graph<Vertex>* getGraph() const;
+	Graph<Vertex, HashMapItem>* getGraph() const;
 };
 

@@ -38,7 +38,7 @@ private:
 		*b = *a;
 		*a = temp;
 	}
-	int parentIndex(int index) {return (index-1)/2}
+	int parentIndex(int index) { return (index - 1) / 2; }
 	int rightChildIndex(int index) { return 2 * index + 2; }
 	int leftChildIndex(int index) { return 2 * index + 1; }
 	void decreaseValue(int index, T value)
@@ -59,12 +59,13 @@ public:
 	MinHeap(int capacity):array(new T[capacity]), size(0), cap(capacity){}
 	~MinHeap() { delete[]array; }
 
+	bool isEmpty() const { return size <= 0; }
 	void update(T valToFind, T newVal)
 	{
 		int index = findByValue(valToFind);
 		decreaseValue(index, newVal);
 	}
-	void push(T& item)
+	void push(T item)
 	{
 		if (size >= cap)
 			return;
@@ -73,16 +74,16 @@ public:
 		array[index] = item;
 		minimalHeapifyUp(index);
 	}
-	T& getMin()
+	T getMin()
 	{
 		if(size>0)
 			return array[0];
 		return T();
 	}
-	T& popMin()
+	T popMin()
 	{
 		if (size <= 0)
-			return INT_MAX;
+			return T();
 		if (size == 1)
 		{
 			size--;

@@ -1,4 +1,5 @@
 #pragma once
+#include "myString.h"
 
 template<typename T>
 class Vector

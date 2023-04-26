@@ -2,20 +2,23 @@
 
 int OutputManager::getIndexByName(const myString& str) const
 {
-	return hash(str);
-}
-int OutputManager::getIndexByPosition(const Coords_T& position) const
-{
-	for (int i = 0; i < graph->getSize(); i++)
+	int index = 0;
+	int hashIndex = hash(str);
+	Node<HashMapItem>* temp = graph->getHashMap()[hashIndex].getFirst();
+	while (temp != nullptr)
 	{
-		Node<Vertex*>* tempNode = (*graph)[i].getFirst();
-		while (tempNode != nullptr && (*graph)[i].getSize() > 0) {
-			if (tempNode->data->getPos() == position)
-				return i;
-			tempNode = tempNode->next;
+		if (temp->data.name == str)
+		{
+			index = temp->data.index;
+			break;
 		}
+		temp = temp->next;
 	}
-	return - 1;
+	if (index >= graph->getSize() || index < 0)
+	{
+		return -1;
+	}
+	return index;	
 }
 
 int OutputManager::hash(const myString& key) const
@@ -26,11 +29,25 @@ int OutputManager::hash(const myString& key) const
 		c = key[i];
 		hashValue = hashValue * 31 + c;
 	}
-	return hashValue % graph->getSize();
+	return hashValue % graph->getHashMap().getSize();
 }
 
-int OutputManager::djikstra(const myString& srcName, const myString& destName, myString& path, bool commandTypeOne) const
+int OutputManager::findPath(const myString& srcName, const myString& destName, myString& path, bool commandTypeOne) const
 {
+	struct HeapItem {
+		int distance;
+		int index;
+		bool visited;
+		bool operator>(const HeapItem& other)
+		{
+			return distance > other.distance;
+		}
+
+		bool operator<(const HeapItem& other)
+		{
+			return distance < other.distance;
+		}
+	};
 	const int size = graph->getSize();
 	const int destIndex = getIndexByName(destName);
 	int currentIndex = getIndexByName(srcName);
@@ -39,15 +56,25 @@ int OutputManager::djikstra(const myString& srcName, const myString& destName, m
 	int* distances = new int[size];
 	int* lastVisitsIndexes = new int[size];
 	bool* visited = new bool[size];
-	for (int i = 0; i < size; i++) {
+	//memset(distances, maxIntValue, sizeof(int) * size);
+	//memset(lastVisitsIndexes, -1, sizeof(int) * size);
+	//memset(visited, false, sizeof(bool)* size);
+	
+	for (int i = 0; i < size; i++)
+	{
 		distances[i] = maxIntValue;
 		lastVisitsIndexes[i] = -1;
 		visited[i] = false;
 	}
+
 	distances[currentIndex] = 0;
 
-	while (visited[destIndex] == false)
+	MinHeap<HeapItem> heap(graph->getSize());
+	//heap.push({ 0,srcIndex,false });
+
+	while (true)
 	{
+		myString currentVertex = (*graph)[currentIndex]->getName();
 		Node<Connection_T>* neighbour = (*graph)[currentIndex]->getFirstConnection();
 		while (neighbour != nullptr)
 		{
@@ -57,22 +84,21 @@ int OutputManager::djikstra(const myString& srcName, const myString& destName, m
 				if (tempDistance < distances[tempIndex] && visited[tempIndex] == false) {
 					distances[tempIndex] = tempDistance;
 					lastVisitsIndexes[tempIndex] = currentIndex;
+					heap.push({ tempDistance,tempIndex,visited[tempIndex] });
 				}
 			}
 			neighbour = neighbour->next;
 		}
 		visited[currentIndex] = true;
 		int newIndex = 0;
-		int min = maxIntValue;
-		for (int i = 0; i < size; i++)
-		{
-			int tmpInd = getIndexByName((*graph)[i]->getName());
-			if (visited[tmpInd] == false && distances[tmpInd] < min)
-			{
-				newIndex = tmpInd;
-				min = distances[newIndex];
-			}
-		}
+
+		if (heap.isEmpty() || visited[destIndex])
+			break;
+		HeapItem tmpHeapItem = heap.popMin();
+		newIndex = tmpHeapItem.index;
+		distances[newIndex] = tmpHeapItem.distance;
+		visited[newIndex] = tmpHeapItem.visited;
+
 		previousIndex = currentIndex;
 		currentIndex = newIndex;
 	}
@@ -82,18 +108,18 @@ int OutputManager::djikstra(const myString& srcName, const myString& destName, m
 	int pathIndex = 0;
 	myString* pathArray = new myString[size];
 	if (commandTypeOne) {
+		cout << returnDistance << " ";
 		while (lastVisitsIndexes[x] != -1 && lastVisitsIndexes[x] != srcIndex)
 		{
 			x = lastVisitsIndexes[x];
 			pathArray[pathIndex++] = (*graph)[x]->getName();
 		}
+		while (pathIndex > 0)
+		{
+			cout << pathArray[--pathIndex];
+			cout << " ";
+		}
 	}
-	while (pathIndex >= 0)
-	{
-		path += " ";
-		path += pathArray[pathIndex--];
-	}
-
 	delete[] distances;
 	delete[] visited;
 	delete[] lastVisitsIndexes;
@@ -101,24 +127,25 @@ int OutputManager::djikstra(const myString& srcName, const myString& destName, m
 	return returnDistance;
 }
 
-OutputManager::OutputManager(const int tests, Graph<Vertex>* g) :testCount(tests), graph(g), maxIntValue(INT_MAX) {}
+OutputManager::OutputManager(const int tests, Graph<Vertex, HashMapItem>* g) :testCount(tests), graph(g), maxIntValue(INT_MAX) {}
 OutputManager::~OutputManager() {}
 
 void OutputManager::run()
 {
-	myString src, dest, type, path = "";
+
+	myString src, dest, type, path;
 	int distance;
 	for (int i = 0; i < testCount; i++) {
 		cin >> src >> dest >> type;
 		path = "";
 		if (type == "0") {
-			distance = djikstra(src, dest, path, false);
+			distance = findPath(src, dest, path, false);
 			cout << distance << '\n';
 		}
 		else if (type == "1")
 		{
-			distance = djikstra(src, dest, path, true);
-			cout << distance << path << '\n';
+			findPath(src, dest, path, true);
+			cout << '\n';
 		}
 	}
 

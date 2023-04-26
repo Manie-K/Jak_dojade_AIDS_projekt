@@ -37,6 +37,7 @@ public:
 	friend istream& operator>>(istream& is, myString& s);
 	
 	bool operator==(const myString& s) const;
+	bool operator==(myString& s) const;
 
 	myString& operator=(const myString& s);
 	myString& operator=(const char* s);

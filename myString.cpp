@@ -149,6 +149,8 @@ size_t myString::getSize() const {return size; }
 
 ostream& operator<<(ostream& os, const myString& s) 
 {
+	if (s.data == "")
+		return os;
 	os << s.data;
 	return os;
 }
@@ -171,6 +173,21 @@ istream& operator>>(istream& is, myString& s)
 }
 
 bool myString::operator==(const myString& s) const
+{
+	if (this == nullptr)
+		return false;
+	if (data == nullptr || &s == nullptr || s.data == nullptr)
+		return false;
+	if (s.size != this->size)
+		return false;
+	for (int i = 0; i < size; i++)
+	{
+		if (data[i] != s.data[i])
+			return false;
+	}
+	return true;
+}
+bool myString::operator==(myString& s) const
 {
 	if (this == nullptr)
 		return false;
