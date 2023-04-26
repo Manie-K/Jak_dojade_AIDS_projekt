@@ -252,8 +252,7 @@ void InputManager::loadConnections()
 	{
 		for (int y = 0; y < h; y++)
 		{
-			for (int x = 0; x < w; x++)
-				visitArray[y][x] = false;
+			memset(visitArray[y], false, w);
 		}
 		setConnectionsOfVertex((*graph)[i], visitArray);
 	}
