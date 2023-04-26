@@ -6,26 +6,23 @@
 struct HashMapItem {
 	const myString name;
 	int index;
-	HashMapItem(const myString* str):name(*str){}
+	HashMapItem(const myString* str):name(*str),index(0){}
 };
 
-template<typename T, typename hashType>
+template<typename T>
 class Graph 
 {
 private:
 	int vertexCount;
 	T** vertices;
-	HashMap<hashType> hashMap;
+	HashMap<HashMapItem> hashMap;
 private:
 	T*& getAtIndex(int index)
 	{
-		if (index >= 0 && index < vertexCount)
-			return vertices[index];
-		T* nullReturn = new T;
-		return nullReturn;
+		return vertices[index];
 	}
 public:
-	Graph(int size) :vertexCount(size), vertices(new T*[size]), hashMap(HashMap<hashType>(size*GRAPH_CAPACITY_MULTIPLIER)) {};
+	Graph(int size) :vertexCount(size), vertices(new T*[size]), hashMap(HashMap<HashMapItem>(size*GRAPH_CAPACITY_MULTIPLIER)) {};
 	~Graph()
 	{
 		for (int i = 0; i < vertexCount; i++)
@@ -37,7 +34,7 @@ public:
 		vertices = nullptr;
 	}
 
-	HashMap<hashType>& getHashMap() { return hashMap; }
+	HashMap<HashMapItem>& getHashMap() { return hashMap; }
 	int getSize() const { return vertexCount; }
 
 	T*& operator[](int index)

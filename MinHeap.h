@@ -1,6 +1,5 @@
 #pragma once
-//#include "Vector.h"
-//implementation with array not vector, updating not adding new items
+
 struct HeapItem {
 	int distance;
 	int index;
@@ -56,7 +55,7 @@ private:
 	int leftChildIndex(int index) { return 2 * index + 1; }
 public:
 	MinHeap(int capacity):array(new HeapItem[capacity]), size(0), cap(capacity){}
-	~MinHeap() { delete[]array; }
+	~MinHeap() { delete[] array; }
 
 	bool isEmpty() const { return size <= 0; }
 	void push(HeapItem item)

@@ -10,12 +10,7 @@ private:
 private:
 	List<T>& getAtIndex(int index)
 	{
-		if (index >= 0 && index < size)
-		{
-			return hashMap[index];
-		}
-		List<T> temp;
-		return temp;
+		return hashMap[index];
 	}
 public:
 	HashMap(int s):size(s),hashMap(new List<T> [s]){}

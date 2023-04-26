@@ -4,14 +4,6 @@
 #include "Vertex.h"
 
 using namespace std;
-
-//when changing to hashTable, need to change:
-//Vertex*& getVertexByName(const myString& str);
-//Vertex*& getVertexByPosition(const Coords_T& position);
-//in loadCities, hash instead of citiesCounter
-//Need to change (*graph)[i] in these functions +
-//in loadConnections function and traverse the graph in different way
-
 class InputManager
 {
 private:
@@ -19,7 +11,7 @@ private:
 	int starCounter;
 	bool hashtagExist;
 	char **map;
-	Graph<Vertex, HashMapItem>* graph;
+	Graph<Vertex>* graph;
 private:
 	bool isValidCityName(const char c);
 	bool isEdgeOfCity(const Coords_T pos);
@@ -30,7 +22,7 @@ private:
 	Vertex*& getVertexByName(const myString& str);
 	Vertex*& getVertexByPosition(const Coords_T& position);
 
-	void setConnectionsOfVertex(Vertex*& vertex, bool** visits);
+	void setConnectionsOfVertex(Vertex*& vertex, bool**& visits);
 
 	void loadMap();
 	void loadCities();
@@ -44,6 +36,6 @@ public:
 	~InputManager();
 
 	void run();
-	Graph<Vertex, HashMapItem>* getGraph() const;
+	Graph<Vertex>* getGraph() const;
 };
 

@@ -11,8 +11,6 @@ InputManager::InputManager(const int w, const int h) : w(w), h(h), starCounter(0
 InputManager::~InputManager()
 {
 	delete graph;
-	delete []map;
-	map = nullptr;
 }
 
 bool InputManager::isValidCityName(const char c)
@@ -140,7 +138,7 @@ myString InputManager::getCity(const Coords_T pos)
 }
 
 
-void InputManager::setConnectionsOfVertex(Vertex*& vertex, bool** visits)
+void InputManager::setConnectionsOfVertex(Vertex*& vertex, bool**& visits)
 {
 	typedef struct {
 		Coords_T pos;
@@ -213,7 +211,7 @@ void InputManager::loadMap()
 				hashtagExist = true;
 		}
 	}
-	graph = new Graph<Vertex, HashMapItem>(starCounter);
+	graph = new Graph<Vertex>(starCounter);
 }
 void InputManager::loadCities()
 {
@@ -254,7 +252,8 @@ void InputManager::loadConnections()
 	{
 		for (int y = 0; y < h; y++)
 		{
-			memset(visitArray[y], false, sizeof(bool)*w);
+			for (int x = 0; x < w; x++)
+				visitArray[y][x] = false;
 		}
 		setConnectionsOfVertex((*graph)[i], visitArray);
 	}
@@ -278,7 +277,7 @@ void InputManager::loadPlanes()
 	}
 }
 
-Graph<Vertex,HashMapItem>* InputManager::getGraph() const 
+Graph<Vertex>* InputManager::getGraph() const 
 { 
 	return graph; 
 }
@@ -302,4 +301,6 @@ void InputManager::destroyMap()
 			map[y] = nullptr;
 		}
 	}
+	delete[]map;
+	map = nullptr;
 }

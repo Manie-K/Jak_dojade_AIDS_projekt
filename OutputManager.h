@@ -10,14 +10,14 @@ class OutputManager
 private:
 	const int testCount;
 	const int maxIntValue;
-	Graph<Vertex, HashMapItem>* graph;
+	Graph<Vertex>* graph;
 private:
 	int getIndexByName(const myString& str) const;
 	
-	int findPath(const myString& srcName, const myString& destName, myString& path, bool commandTypeOne) const;
+	int findPath(const myString& srcName, const myString& destName, bool commandTypeOne) const;
 	int hash(const myString& key) const;
 public:
-	OutputManager(const int tests, Graph<Vertex, HashMapItem>* g);
+	OutputManager(const int tests, Graph<Vertex>* g);
 	~OutputManager();
 
 	void run();

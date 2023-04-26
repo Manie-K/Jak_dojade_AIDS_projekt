@@ -32,7 +32,7 @@ int OutputManager::hash(const myString& key) const
 	return hashValue % graph->getHashMap().getSize();
 }
 
-int OutputManager::findPath(const myString& srcName, const myString& destName, myString& path, bool commandTypeOne) const
+int OutputManager::findPath(const myString& srcName, const myString& destName, bool commandTypeOne) const
 {
 	const int size = graph->getSize();
 	const int destIndex = getIndexByName(destName);
@@ -42,9 +42,6 @@ int OutputManager::findPath(const myString& srcName, const myString& destName, m
 	int* distances = new int[size];
 	int* lastVisitsIndexes = new int[size];
 	bool* visited = new bool[size];
-	//memset(distances, maxIntValue, sizeof(int) * size);
-	//memset(lastVisitsIndexes, -1, sizeof(int) * size);
-	//memset(visited, false, sizeof(bool)* size);
 	
 	for (int i = 0; i < size; i++)
 	{
@@ -56,7 +53,6 @@ int OutputManager::findPath(const myString& srcName, const myString& destName, m
 	distances[currentIndex] = 0;
 
 	MinHeap heap(graph->getSize());
-	//heap.push({ 0,srcIndex,false });
 
 	while (true)
 	{
@@ -113,24 +109,23 @@ int OutputManager::findPath(const myString& srcName, const myString& destName, m
 	return returnDistance;
 }
 
-OutputManager::OutputManager(const int tests, Graph<Vertex, HashMapItem>* g) :testCount(tests), graph(g), maxIntValue(INT_MAX) {}
+OutputManager::OutputManager(const int tests, Graph<Vertex>* g) :testCount(tests), graph(g), maxIntValue(INT_MAX) {}
 OutputManager::~OutputManager() {}
 
 void OutputManager::run()
 {
 
-	myString src, dest, type, path;
+	myString src, dest, type;
 	int distance;
 	for (int i = 0; i < testCount; i++) {
 		cin >> src >> dest >> type;
-		path = "";
 		if (type == "0") {
-			distance = findPath(src, dest, path, false);
+			distance = findPath(src, dest, false);
 			cout << distance << '\n';
 		}
 		else if (type == "1")
 		{
-			findPath(src, dest, path, true);
+			findPath(src, dest, true);
 			cout << '\n';
 		}
 	}
