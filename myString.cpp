@@ -145,6 +145,10 @@ int myString::toInt() const
 	return result;
 }
 
+const char* myString::getCharPointer() const{
+	return data;
+}
+
 size_t myString::getSize() const {return size; }
 
 ostream& operator<<(ostream& os, const myString& s) 

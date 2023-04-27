@@ -15,7 +15,7 @@ private:
 	int getIndexByName(const myString& str) const;
 	
 	int findPath(const myString& srcName, const myString& destName, bool commandTypeOne) const;
-	int hash(const myString& key) const;
+	int hash(const char* key) const;
 public:
 	OutputManager(const int tests, Graph<Vertex>* g);
 	~OutputManager();

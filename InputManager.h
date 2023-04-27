@@ -19,7 +19,7 @@ private:
 	myString getCityName(const Coords_T pos);
 	myString getCity(const Coords_T pos);
 
-	Vertex*& getVertexByName(const myString& str);
+	Vertex*& getVertexByName(const char * str);
 	Vertex*& getVertexByPosition(const Coords_T& position);
 
 	void setConnectionsOfVertex(Vertex*& vertex, bool**& visits);
@@ -28,9 +28,8 @@ private:
 	void loadCities();
 	void loadConnections();
 	void loadPlanes();
-
 	void destroyMap();
-	int hash(const myString& key) const;
+	int hash(const char* str) const;
 public:
 	InputManager(const int w, const int h);
 	~InputManager();

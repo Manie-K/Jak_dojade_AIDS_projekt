@@ -23,10 +23,11 @@ public:
 	myString(const myString& temp);
 
 	~myString();
-
+	
 	//methods
 	void pushCharAtEnd(const char ch);
 	void trim();
+	const char* getCharPointer()const;
 	int toInt() const;
 
 	//getters/setters

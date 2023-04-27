@@ -28,18 +28,18 @@ bool InputManager::isEdgeOfCity(const Coords_T pos)
 	return false;
 }
 
-int InputManager::hash(const myString& key) const
+int InputManager::hash(const char* key) const
 {
 	long long hashValue = 0;
 	char c;
-	for (int i = 0; i < key.getSize();i++) {
+	for (int i = 0; i < strlen(key)+1;i++) {
 		c = key[i];
 		hashValue = hashValue * 31 + c;
 	}
 	return hashValue % graph->getHashMap().getSize();
 }
 
-Vertex*& InputManager::getVertexByName(const myString& str)
+Vertex*& InputManager::getVertexByName(const char * str)
 {
 	int index = 0;
 	int hashIndex = hash(str);
@@ -227,7 +227,7 @@ void InputManager::loadCities()
 				temp->setName(getCity(temp->getPos()));
 
 				const myString name = temp->getName();
-				index = hash(name);
+				index = hash(name.getCharPointer());
 
 				HashMapItem tempItem(&name);
 				tempItem.index = citiesCount;
@@ -266,14 +266,33 @@ void InputManager::loadPlanes()
 	int howManyPlanes;
 	cin >> howManyPlanes;
 
-	myString src, dest;
 	int distance;
+	char* src = new char[w+1];
+	char* dest = new char[w+1];
+	char c;
 
 	for (int i = 0; i < howManyPlanes; i++)
 	{
-		cin >> src >> dest >> distance;//change to getchar
+		int index = 0;
+		do {
+			c = getchar();
+			if(c!= ENTER_KEY && c != SPACE_KEY)
+				src[index++] = c;
+		} while (c != SPACE_KEY);
+		src[index] = STR_END_KEY;
+		index = 0;
+		do {
+			c = getchar();
+			if(c!=ENTER_KEY && c!=SPACE_KEY)
+				dest[index++] = c;
+		} while (c != SPACE_KEY);
+		dest[index] = STR_END_KEY;
+		cin >> distance;
+		
 		getVertexByName(src)->addConnection(getVertexByName(dest), distance);
 	}
+	delete[]src;
+	delete[]dest;
 }
 
 Graph<Vertex>* InputManager::getGraph() const 
@@ -286,11 +305,11 @@ void InputManager::run()
 	loadMap();
 	loadCities();
 	loadConnections();
-	clock_t t1 = clock();
+	//clock_t t1 = clock();
 	loadPlanes();
-	clock_t t2 = clock();
-	cout << "LADOWANIE SAMOLOTOW ZAJELO =========================";
-	cout << double(t2 - t1) / CLOCKS_PER_SEC;
+	//clock_t t2 = clock();
+	//cout << "LADOWANIE SAMOLOTOW ZAJELO =========================";
+	//cout << double(t2 - t1) / CLOCKS_PER_SEC;
 	destroyMap();
 }
 

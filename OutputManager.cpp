@@ -3,7 +3,7 @@
 int OutputManager::getIndexByName(const myString& str) const
 {
 	int index = 0;
-	int hashIndex = hash(str);
+	int hashIndex = hash(str.getCharPointer());
 	Node<HashMapItem>* temp = graph->getHashMap()[hashIndex].getFirst();
 	while (temp != nullptr)
 	{
@@ -21,11 +21,11 @@ int OutputManager::getIndexByName(const myString& str) const
 	return index;	
 }
 
-int OutputManager::hash(const myString& key) const
+int OutputManager::hash(const char* key) const
 {
 	long long hashValue = 0;
 	char c;
-	for (int i = 0; i < key.getSize(); i++) {
+	for (int i = 0; i < strlen(key)+1; i++) {
 		c = key[i];
 		hashValue = hashValue * 31 + c;
 	}
