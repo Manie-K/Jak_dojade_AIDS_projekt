@@ -26,9 +26,9 @@ private:
 		int right = rightChildIndex(index);
 		int left = leftChildIndex(index);
 		int minimal = index;
-		if (array[index] > array[right] && right > 0 && right < size)
+		if (right > 0 && right < size && array[index] > array[right])
 			minimal = right;
-		if (array[index] > array[left] && left > 0 && left < size)
+		if (left > 0 && left < size && array[index] > array[left])
 			minimal = left;
 		if (minimal != index)
 		{

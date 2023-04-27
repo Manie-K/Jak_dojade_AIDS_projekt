@@ -298,16 +298,11 @@ void InputManager::loadPlanes()
 		
 		sourceWasTheSame = (strcmp(prevSrc, src) == 0);
 		
+		destinationVertex = getVertexByName(dest);
 		if(!sourceWasTheSame){
 			sourceVertex = getVertexByName(src);
-			destinationVertex = getVertexByName(dest);
-			sourceVertex->addConnection(destinationVertex, distance);
 		}
-		else
-		{
-			destinationVertex = getVertexByName(dest);
-			sourceVertex->addConnection(destinationVertex, distance);
-		}
+		sourceVertex->addConnection(destinationVertex, distance);
 		strcpy(prevSrc, src);
 	}
 	delete[]src;
