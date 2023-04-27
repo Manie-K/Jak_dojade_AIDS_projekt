@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "InputManager.h"
 
 InputManager::InputManager(const int w, const int h) : w(w), h(h), starCounter(0),hashtagExist(false), graph(nullptr)
@@ -268,8 +269,14 @@ void InputManager::loadPlanes()
 
 	int distance;
 	char* src = new char[w+1];
+	char* prevSrc = new char[w+1];
 	char* dest = new char[w+1];
 	char c;
+
+	bool sourceWasTheSame = false;
+
+	Vertex* sourceVertex = nullptr;
+	Vertex* destinationVertex;
 
 	for (int i = 0; i < howManyPlanes; i++)
 	{
@@ -289,9 +296,22 @@ void InputManager::loadPlanes()
 		dest[index] = STR_END_KEY;
 		cin >> distance;
 		
-		getVertexByName(src)->addConnection(getVertexByName(dest), distance);
+		sourceWasTheSame = (strcmp(prevSrc, src) == 0);
+		
+		if(!sourceWasTheSame){
+			sourceVertex = getVertexByName(src);
+			destinationVertex = getVertexByName(dest);
+			sourceVertex->addConnection(destinationVertex, distance);
+		}
+		else
+		{
+			destinationVertex = getVertexByName(dest);
+			sourceVertex->addConnection(destinationVertex, distance);
+		}
+		strcpy(prevSrc, src);
 	}
 	delete[]src;
+	delete[]prevSrc;
 	delete[]dest;
 }
 
@@ -305,11 +325,11 @@ void InputManager::run()
 	loadMap();
 	loadCities();
 	loadConnections();
-	//clock_t t1 = clock();
+	clock_t t1 = clock();
 	loadPlanes();
-	//clock_t t2 = clock();
-	//cout << "LADOWANIE SAMOLOTOW ZAJELO =========================";
-	//cout << double(t2 - t1) / CLOCKS_PER_SEC;
+	clock_t t2 = clock();
+	cout << "LADOWANIE SAMOLOTOW ZAJELO =========================";
+	cout << double(t2 - t1) / CLOCKS_PER_SEC;
 	destroyMap();
 }
 
