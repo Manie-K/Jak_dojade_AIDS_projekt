@@ -271,7 +271,7 @@ void InputManager::loadPlanes()
 
 	for (int i = 0; i < howManyPlanes; i++)
 	{
-		cin >> src >> dest >> distance;
+		cin >> src >> dest >> distance;//change to getchar
 		getVertexByName(src)->addConnection(getVertexByName(dest), distance);
 	}
 }
@@ -286,7 +286,11 @@ void InputManager::run()
 	loadMap();
 	loadCities();
 	loadConnections();
+	clock_t t1 = clock();
 	loadPlanes();
+	clock_t t2 = clock();
+	cout << "LADOWANIE SAMOLOTOW ZAJELO =========================";
+	cout << double(t2 - t1) / CLOCKS_PER_SEC;
 	destroyMap();
 }
 

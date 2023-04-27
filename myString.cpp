@@ -203,6 +203,17 @@ bool myString::operator==(myString& s) const
 	return true;
 }
 
+bool myString::operator==(const char* s)
+{
+	int tempSize = strlen(s)+1;
+	if (tempSize != size)
+		return false;
+	for (int i = 0; i < size; i++)
+		if (data[i] != s[i])
+			return false;
+	return true;
+}
+
 myString& myString::operator=(const myString& s)
 {
 	if (this == nullptr || &s == nullptr || s.data == nullptr)
