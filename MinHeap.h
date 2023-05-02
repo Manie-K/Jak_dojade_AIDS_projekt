@@ -14,6 +14,7 @@ struct HeapItem {
 		return distance < other.distance;
 	}
 };
+
 class MinHeap
 {
 private:

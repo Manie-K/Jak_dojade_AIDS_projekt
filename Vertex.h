@@ -2,7 +2,6 @@
 #include "Queue.h"
 #include "Graph.h"
 
-
 struct Coords_T {
 	int x, y;
 	bool operator==(const Coords_T& other)

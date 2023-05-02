@@ -277,7 +277,6 @@ void InputManager::loadPlanes()
 
 	Vertex* sourceVertex = nullptr;
 	Vertex* destinationVertex;
-
 	for (int i = 0; i < howManyPlanes; i++)
 	{
 		int index = 0;
@@ -320,11 +319,7 @@ void InputManager::run()
 	loadMap();
 	loadCities();
 	loadConnections();
-	clock_t t1 = clock();
 	loadPlanes();
-	clock_t t2 = clock();
-	cout << "LADOWANIE SAMOLOTOW ZAJELO =========================";
-	cout << double(t2 - t1) / CLOCKS_PER_SEC;
 	destroyMap();
 }
 

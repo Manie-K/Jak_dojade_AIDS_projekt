@@ -12,13 +12,13 @@ public:
 	List() :size(0), first(nullptr), last(nullptr) {}
 	List(const List<T>& other) : size(other.size), first(other.first), last(other.last) {};
 	~List() {
+		size = 0;
 		Node<T>* current = first;
 		while (current!=nullptr) {
 			Node<T>* next = current->next;
 			delete current;
 			current = next;
 		}
-		size = 0;
 	}
 
 	size_t getSize() const { 
@@ -87,7 +87,7 @@ public:
 			delete first;
 			first = nullptr;
 			last = nullptr;
-			size--;
+			size=0;
 		}
 		if (first != nullptr&&first->next!=nullptr) {
 			first = first->next;

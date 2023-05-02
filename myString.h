@@ -38,7 +38,6 @@ public:
 	friend istream& operator>>(istream& is, myString& s);
 	
 	bool operator==(const myString& s) const;
-	bool operator==(myString& s) const;
 	bool operator==(const char* s);
 
 	myString& operator=(const myString& s);

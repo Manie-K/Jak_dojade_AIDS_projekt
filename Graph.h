@@ -6,7 +6,7 @@
 struct HashMapItem {
 	const myString name;
 	int index;
-	HashMapItem(const myString* str):name(*str),index(0){}
+	HashMapItem(const myString* str) :name(*str), index(0) {}
 };
 
 template<typename T>
@@ -22,7 +22,7 @@ private:
 		return vertices[index];
 	}
 public:
-	Graph(int size) :vertexCount(size), vertices(new T*[size]), hashMap(HashMap<HashMapItem>(GRAPH_CAPACITY_MULTIPLIER)) {};
+	Graph(int size) :vertexCount(size), vertices(new T*[size]), hashMap(HashMap<HashMapItem>(size*GRAPH_CAPACITY_MULTIPLIER)) {};
 	~Graph()
 	{
 		for (int i = 0; i < vertexCount; i++)

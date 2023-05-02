@@ -14,9 +14,12 @@ private:
 	}
 public:
 	HashMap(int s):size(s),hashMap(new List<T> [s]){}
-	~HashMap() { delete[]hashMap; }
+	~HashMap() { 
+		delete[]hashMap; 
+		hashMap = nullptr; 
+	}
 
-	int getSize()const { return size; };
+	int getSize() const { return size; };
 	List<T>& operator[](int index)
 	{
 		return getAtIndex(index);

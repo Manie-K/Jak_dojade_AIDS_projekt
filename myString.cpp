@@ -191,21 +191,6 @@ bool myString::operator==(const myString& s) const
 	}
 	return true;
 }
-bool myString::operator==(myString& s) const
-{
-	if (this == nullptr)
-		return false;
-	if (data == nullptr || &s == nullptr || s.data == nullptr)
-		return false;
-	if (s.size != this->size)
-		return false;
-	for (int i = 0; i < size; i++)
-	{
-		if (data[i] != s.data[i])
-			return false;
-	}
-	return true;
-}
 
 bool myString::operator==(const char* s)
 {
