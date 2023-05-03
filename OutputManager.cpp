@@ -64,8 +64,8 @@ void OutputManager::djikstraUpdate(MinHeap* heap, int* newIndex, int* distances,
 	distances[*newIndex] = tmpHeapItem.distance;
 	visited[*newIndex] = tmpHeapItem.visited;
 
-	prevInd = currInd;
-	currInd = newIndex;
+	*prevInd = *currInd;
+	*currInd = *newIndex;
 }
 
 int OutputManager::findPath(const myString& srcName, const myString& destName, bool commandTypeOne) const
