@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "InputManager.h"
 
-InputManager::InputManager(const int w, const int h) : w(w), h(h), starCounter(0),hashtagExist(false), graph(nullptr)
+InputManager::InputManager(const int w, const int h) : w(w), h(h), starCounter(0),roadsExist(false), graph(nullptr)
 {
 	map = new char* [h];
 	for (int y = 0; y < h; y++)
@@ -209,7 +209,7 @@ void InputManager::loadMap()
 			if (temp == STAR_CHAR)
 				starCounter++;
 			else if (temp == ROAD_CHAR)
-				hashtagExist = true;
+				roadsExist = true;
 		}
 	}
 	graph = new Graph<Vertex>(starCounter);
@@ -242,7 +242,7 @@ void InputManager::loadCities()
 }
 void InputManager::loadConnections()
 {
-	if (!hashtagExist)
+	if (!roadsExist)
 		return;
 	bool** visitArray = new bool* [h];
 	for (int i = 0; i < h; i++) {
@@ -273,6 +273,7 @@ void InputManager::loadPlanes()
 	char* dest = new char[w+1];
 	char c;
 
+	prevSrc[0] = STR_END_KEY;
 	bool sourceWasTheSame = false;
 
 	Vertex* sourceVertex = nullptr;

@@ -9,7 +9,7 @@ class InputManager
 private:
 	const int w, h;
 	int starCounter;
-	bool hashtagExist;
+	bool roadsExist;
 	char **map;
 	Graph<Vertex>* graph;
 private:
