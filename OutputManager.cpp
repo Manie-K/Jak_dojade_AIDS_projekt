@@ -32,34 +32,59 @@ int OutputManager::hash(const char* key) const
 	return hashValue % graph->getHashMap().getSize();
 }
 
+void OutputManager::resetDjikstraArrays(int* distances, int* lastVisits, bool* visited, const int size) const
+{
+	for (int i = 0; i < size; i++){
+		distances[i] = maxIntValue;
+		lastVisits[i] = -1;
+		visited[i] = false;
+	}
+}
+
+void OutputManager::commandTypeOneDisplay(int retDist, int* lastVis, int dInd, int sInd, int size, Graph<Vertex>* graph) const
+{
+	int x = dInd, pathIndex = 0;
+	myString* pathArray = new myString[size];
+	cout << retDist << " ";
+	while (lastVis[x] != -1 && lastVis[x] != sInd) {
+		x = lastVis[x];
+		pathArray[pathIndex++] = (*graph)[x]->getName();
+	}
+	while (pathIndex > 0) {
+		cout << pathArray[--pathIndex];
+		cout << " ";
+	}
+	delete[] pathArray;
+}
+
+void OutputManager::djikstraUpdate(MinHeap* heap, int* newIndex, int* distances, bool* visited, int* prevInd, int* currInd) const
+{
+	HeapItem tmpHeapItem = heap->popMin();
+	*newIndex = tmpHeapItem.index;
+	distances[*newIndex] = tmpHeapItem.distance;
+	visited[*newIndex] = tmpHeapItem.visited;
+
+	prevInd = currInd;
+	currInd = newIndex;
+}
+
 int OutputManager::findPath(const myString& srcName, const myString& destName, bool commandTypeOne) const
 {
 	const int size = graph->getSize();
 	const int destIndex = getIndexByName(destName);
 	int currentIndex = getIndexByName(srcName);
-	int srcIndex = currentIndex;
-	int previousIndex = currentIndex;
-	int* distances = new int[size];
-	int* lastVisitsIndexes = new int[size];
+	int srcIndex = currentIndex, previousIndex = currentIndex, newIndex = 0;
+	int *distances = new int[size], *lastVisitsIndexes = new int[size];
 	bool* visited = new bool[size];
 	
-	for (int i = 0; i < size; i++)
-	{
-		distances[i] = maxIntValue;
-		lastVisitsIndexes[i] = -1;
-		visited[i] = false;
-	}
-
+	resetDjikstraArrays(distances, lastVisitsIndexes, visited, size);
 	distances[currentIndex] = 0;
-
 	MinHeap heap(graph->getSize());
 
-	while (true)
-	{
-		myString currentVertex = (*graph)[currentIndex]->getName();
+	while (true){
 		Node<Connection_T>* neighbour = (*graph)[currentIndex]->getFirstConnection();
-		while (neighbour != nullptr)
-		{
+		
+		while (neighbour != nullptr){
 			if (neighbour->data.dest != nullptr) {
 				int tempIndex = getIndexByName(neighbour->data.dest->getName());
 				int tempDistance = neighbour->data.weight + distances[currentIndex];
@@ -72,40 +97,19 @@ int OutputManager::findPath(const myString& srcName, const myString& destName, b
 			neighbour = neighbour->next;
 		}
 		visited[currentIndex] = true;
-		int newIndex = 0;
 
 		if (heap.isEmpty() || visited[destIndex])
 			break;
-		HeapItem tmpHeapItem = heap.popMin();
-		newIndex = tmpHeapItem.index;
-		distances[newIndex] = tmpHeapItem.distance;
-		visited[newIndex] = tmpHeapItem.visited;
-
-		previousIndex = currentIndex;
-		currentIndex = newIndex;
+		djikstraUpdate(&heap, &newIndex, distances, visited, &previousIndex, &currentIndex);
 	}
 	int returnDistance = distances[destIndex];
-
-	int x = destIndex;
-	int pathIndex = 0;
-	myString* pathArray = new myString[size];
-	if (commandTypeOne) {
-		cout << returnDistance << " ";
-		while (lastVisitsIndexes[x] != -1 && lastVisitsIndexes[x] != srcIndex)
-		{
-			x = lastVisitsIndexes[x];
-			pathArray[pathIndex++] = (*graph)[x]->getName();
-		}
-		while (pathIndex > 0)
-		{
-			cout << pathArray[--pathIndex];
-			cout << " ";
-		}
-	}
+	
+	if (commandTypeOne)
+		commandTypeOneDisplay(returnDistance, lastVisitsIndexes, destIndex, srcIndex, size, graph);
 	delete[] distances;
 	delete[] visited;
 	delete[] lastVisitsIndexes;
-	delete[] pathArray;
+
 	return returnDistance;
 }
 
