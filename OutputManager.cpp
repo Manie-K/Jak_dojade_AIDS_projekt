@@ -25,7 +25,7 @@ int OutputManager::hash(const char* key) const
 {
 	long long hashValue = 0;
 	char c;
-	for (int i = 0; i < strlen(key)+1; i++) {
+	for (int i = 0; i < (int)strlen(key)+1; i++) {
 		c = key[i];
 		hashValue = hashValue * 31 + c;
 	}
@@ -41,7 +41,7 @@ void OutputManager::resetDjikstraArrays(int* distances, int* lastVisits, bool* v
 	}
 }
 
-void OutputManager::commandTypeOneDisplay(int retDist, int* lastVis, int dInd, int sInd, int size, Graph<Vertex>* graph) const
+void OutputManager::commandTypeOneDisplay(int retDist, int* lastVis, int dInd, int sInd, int size) const
 {
 	int x = dInd, pathIndex = 0;
 	myString* pathArray = new myString[size];
@@ -105,7 +105,7 @@ int OutputManager::findPath(const myString& srcName, const myString& destName, b
 	int returnDistance = distances[destIndex];
 	
 	if (commandTypeOne)
-		commandTypeOneDisplay(returnDistance, lastVisitsIndexes, destIndex, srcIndex, size, graph);
+		commandTypeOneDisplay(returnDistance, lastVisitsIndexes, destIndex, srcIndex, size);
 	delete[] distances;
 	delete[] visited;
 	delete[] lastVisitsIndexes;
@@ -116,7 +116,7 @@ int OutputManager::findPath(const myString& srcName, const myString& destName, b
 OutputManager::OutputManager(const int tests, Graph<Vertex>* g) :testCount(tests), graph(g), maxIntValue(INT_MAX) {}
 OutputManager::~OutputManager() {}
 
-void OutputManager::run()
+void OutputManager::run() const
 {
 
 	myString src, dest, type;

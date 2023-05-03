@@ -4,12 +4,12 @@ struct HeapItem {
 	int distance;
 	int index;
 	bool visited;
-	bool operator>(const HeapItem& other)
+	bool operator>(const HeapItem& other) const
 	{
 		return distance > other.distance;
 	}
 
-	bool operator<(const HeapItem& other)
+	bool operator<(const HeapItem& other) const
 	{
 		return distance < other.distance;
 	}
@@ -51,9 +51,9 @@ private:
 		*b = *a;
 		*a = temp;
 	}
-	int parentIndex(int index) { return (index - 1) / 2; }
-	int rightChildIndex(int index) { return 2 * index + 2; }
-	int leftChildIndex(int index) { return 2 * index + 1; }
+	static int parentIndex(int index) { return (index - 1) / 2; }
+	static int rightChildIndex(int index) { return 2 * index + 2; }
+	static int leftChildIndex(int index) { return 2 * index + 1; }
 public:
 	MinHeap(int capacity):array(new HeapItem[capacity]), size(0), cap(capacity){}
 	~MinHeap() { delete[] array; }

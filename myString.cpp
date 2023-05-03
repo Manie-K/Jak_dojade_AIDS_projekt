@@ -18,7 +18,7 @@ myString::myString(const char* newData)
 	}
 	size = strlen(newData) + 1;
 	data = new char[size];
-	for (int i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++)
 		data[i] = newData[i];
 }
 
@@ -33,7 +33,7 @@ myString::myString(const myString& temp)
 	size = temp.size;
 	data = new char[size];
 	int actualSize = 0;
-	for (int i = 0; i < size; i++) {
+	for (size_t i = 0; i < size; i++) {
 		if (temp.data[i] != '\xFD') {
 			data[i] = temp.data[i];
 			actualSize++;
@@ -57,13 +57,13 @@ void myString::pushCharAtEnd(const char ch)
 	if (ch != STR_END_KEY)
 	{
 		char* temp = new char[size];
-		for (int i = 0; i < size; i++)
+		for (size_t i = 0; i < size; i++)
 			temp[i] = data[i];
 		delete[] data;
 		size++;
 		data = new char[size];
 
-		for (int i = 0; i < size - 2; i++)
+		for (size_t i = 0; i < size - 2; i++)
 		{
 			data[i] = temp[i];
 		}
@@ -79,10 +79,10 @@ void myString::trim()
 {
 	if (size == 1)
 		return;
-	int beginCount = 0;
-	int endCount = 0;
+	size_t beginCount = 0;
+	size_t endCount = 0;
 	
-	for (int i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++)
 	{
 		if (data[i] == STR_END_KEY || data[i] == SPACE_KEY || data[i] == ENTER_KEY || data[i] == TAB_KEY || data[i] == CARRIAGE_KEY
 			|| data[i] == VERT_TAB_KEY || data[i] == FORM_KEY)
@@ -91,7 +91,7 @@ void myString::trim()
 			break;
 	}
 
-	for (int i = size - 1; i >= 0; i--)
+	for (size_t i = size - 1; i >= 0; i--)
 	{
 		if (data[i] == STR_END_KEY || data[i] == SPACE_KEY || data[i] == ENTER_KEY || data[i] == TAB_KEY || data[i] == CARRIAGE_KEY
 			|| data[i] == VERT_TAB_KEY || data[i] == FORM_KEY)
@@ -108,10 +108,10 @@ void myString::trim()
 		size = 1;
 		return;
 	}
-	int newSize = size + 1 - endCount - beginCount;
+	size_t newSize = size + 1 - endCount - beginCount;
 
 	char* tab = new char[newSize];
-	for (int i = beginCount; i <= size-endCount; i++)
+	for (size_t i = beginCount; i <= size-endCount; i++)
 	{
 		tab[i - beginCount] = data[i];
 	}
@@ -119,7 +119,7 @@ void myString::trim()
 	delete[] data;
 	size = newSize;
 	data = new char[size];
-	for (int i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++)
 		data[i] = tab[i];
 	data[size - 1] = STR_END_KEY;
 	delete[] tab;  
@@ -132,7 +132,7 @@ int myString::toInt() const
 	int result = 0;
 	int tenPower = 1;
 
-	for (int i = size - 2; i >= 0; i--)
+	for (size_t i = size - 2; i >= 0; i--)
 	{
 		if (data[i] == '-')
 		{
@@ -153,7 +153,7 @@ size_t myString::getSize() const {return size; }
 
 ostream& operator<<(ostream& os, const myString& s) 
 {
-	if (s.data == "")
+	if (strcmp("",s.data) == 0)
 		return os;
 	os << s.data;
 	return os;
@@ -169,7 +169,7 @@ istream& operator>>(istream& is, myString& s)
 		delete[] s.data;
 	s.size = strlen(buffer) + 1;
 	s.data = new char[s.size];
-	for (int i = 0; i < s.size; i++)
+	for (size_t i = 0; i < s.size; i++)
 		s.data[i] = buffer[i];
 
 	delete[] buffer;
@@ -184,20 +184,19 @@ bool myString::operator==(const myString& s) const
 		return false;
 	if (s.size != this->size)
 		return false;
-	for (int i = 0; i < size; i++)
-	{
+	for (size_t i = 0; i < size; i++)
 		if (data[i] != s.data[i])
 			return false;
-	}
+
 	return true;
 }
 
-bool myString::operator==(const char* s)
+bool myString::operator==(const char* s) const
 {
-	int tempSize = strlen(s)+1;
+	size_t tempSize = strlen(s)+1;
 	if (tempSize != size)
 		return false;
-	for (int i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++)
 		if (data[i] != s[i])
 			return false;
 	return true;
@@ -205,12 +204,12 @@ bool myString::operator==(const char* s)
 
 myString& myString::operator=(const myString& s)
 {
-	if (this == nullptr || &s == nullptr || s.data == nullptr)
+	if (this == nullptr || &s == this || s.data == nullptr)
 		return *this;
 	delete[] data;
 	size = s.size;
 	data = new char[size];
-	for (int i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++)
 		data[i] = s.data[i];
 	return *this;
 }
@@ -222,7 +221,7 @@ myString& myString::operator=(const char* s)
 	delete[] data;
 	size = strlen(s) + 1;
 	data = new char[size];
-	for (int i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++)
 		data[i] = s[i];
 	return *this;
 }
@@ -230,13 +229,13 @@ myString& myString::operator=(const char* s)
 myString& myString::operator+=(const myString& s)
 {
 	char* oldData = new char[size];
-	for (int i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++)
 		oldData[i] = data[i];
 	delete[] data;
-	int oldSize = size;
+	size_t oldSize = size;
 	size = size + s.size - 1;
 	data = new char[size];
-	int i;
+	size_t i;
 	for (i = 0; i < oldSize - 1; i++)
 		data[i] = oldData[i];
 	for (i = oldSize - 1; i < size; i++)

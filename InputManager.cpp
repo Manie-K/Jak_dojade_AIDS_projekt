@@ -33,7 +33,7 @@ int InputManager::hash(const char* key) const
 {
 	long long hashValue = 0;
 	char c;
-	for (int i = 0; i < strlen(key)+1;i++) {
+	for (int i = 0; i < (int)strlen(key)+1;i++) {
 		c = key[i];
 		hashValue = hashValue * 31 + c;
 	}
@@ -282,14 +282,14 @@ void InputManager::loadPlanes()
 	{
 		int index = 0;
 		do {
-			c = getchar();
+			c = (char)getchar();
 			if(c!= ENTER_KEY && c != SPACE_KEY)
 				src[index++] = c;
 		} while (c != SPACE_KEY);
 		src[index] = STR_END_KEY;
 		index = 0;
 		do {
-			c = getchar();
+			c = (char)getchar();
 			if(c!=ENTER_KEY && c!=SPACE_KEY)
 				dest[index++] = c;
 		} while (c != SPACE_KEY);
